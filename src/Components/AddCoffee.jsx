@@ -1,3 +1,4 @@
+import Swal from 'sweetalert2'
 
 const AddCoffee = () => {
 
@@ -12,16 +13,40 @@ const AddCoffee = () => {
         const taste = form.taste.value;
         const category = form.category.value;
         const details = form.details.value;
+        const photo = form.photo.value;
 
-        const newCoffee = {name, quantity,supplier, taste, category, details};
+        const newCoffee = {name, quantity,supplier, taste, category, details,photo};
 
         console.log(newCoffee);
-    }
 
+        //send server side
+        fetch('http://localhost:5000/coffee',{
+            method: 'POST',
+            headers: {
+                'content-type':'application/json'
+            },
+            body: JSON.stringify(newCoffee)
+        })
+        .then(res=>res.json())
+        .then(data =>{
+            console.log(data);
+
+            if(data.insertedId){
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Coffee added successfully',
+                    icon: 'success',
+                    confirmButtonText: 'Cool'
+                  })
+                  form.reset();
+            }
+        })
+    }
 
     return (
         <div className="my-20 bg-slate-200 p-14">
             <h1 className="text-5xl text-center font-extrabold mb-8">Add Coffee</h1>
+
             <form onSubmit={handleAddCoffee}>
                 {/* form row (name, quantity) */}
                 <div className="md:flex gap-5 mb-7">
