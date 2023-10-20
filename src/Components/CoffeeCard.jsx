@@ -1,7 +1,10 @@
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-const CoffeeCard = ({ coffee }) => {
+const CoffeeCard = ({ coffee, coffees, setCoffees }) => {
+
+    const { _id, name, quantity, taste, category, photo } = coffee;
 
     const handleDelete = id => {
         //   console.log(id)
@@ -29,6 +32,8 @@ const CoffeeCard = ({ coffee }) => {
                                 'Your file has been deleted.',
                                 'success'
                             )
+                            const remaining = coffees.filter(coffee=> coffee._id !== _id)
+                            setCoffees(remaining)
                         }
 
                     })
@@ -37,7 +42,7 @@ const CoffeeCard = ({ coffee }) => {
         })
     }
 
-    const { _id, name, quantity, taste, category, photo } = coffee;
+    
 
     return (
         <div className="card card-side bg-slate-100 shadow-xl">
@@ -50,9 +55,11 @@ const CoffeeCard = ({ coffee }) => {
                     <p>Category :{category} </p>
                 </div>
                 <div className="card-actions justify-end">
-                    <div className="btn-group btn-group-vertical">
-                        <button className="btn btn-active">View</button>
-                        <button className="btn">Update</button>
+                    <div className="btn-group btn-group-vertical space-y-4">
+                        <button className="btn btn-neutral">View</button>
+                        <Link to={`/updateCoffee/${_id}`}>
+                            <button className="btn btn-neutral">Update</button>
+                        </Link>
                         <button
                             onClick={() => handleDelete(_id)}
                             className="btn bg-red-500 text-white">Delete</button>
@@ -64,7 +71,10 @@ const CoffeeCard = ({ coffee }) => {
 };
 
 CoffeeCard.propTypes = {
-    coffee: PropTypes.object
+    coffee: PropTypes.object,
+    coffees:PropTypes.array,
+    setCoffees:PropTypes.func
+
 }
 
 export default CoffeeCard;

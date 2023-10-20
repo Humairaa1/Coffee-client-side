@@ -1,9 +1,129 @@
-
+import { useLoaderData } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const UpdateCoffee = () => {
+
+    const coffee = useLoaderData();
+    const {_id, name, quantity,supplier, taste, category,details, photo } = coffee;
+
+    const handleUpdate = e =>{
+        e.preventDefault();
+
+        const form = e.target;
+        const name = form.name.value;
+        const quantity = form.quantity.value;
+        const supplier = form.supplier.value;
+        const taste = form.taste.value;
+        const category = form.category.value;
+        const details = form.details.value;
+        const photo = form.photo.value;
+
+        const newCoffee = {name, quantity,supplier, taste, category, details,photo};
+
+        console.log(newCoffee);
+
+        //send server side
+        fetch(`http://localhost:5000/coffee/${_id}`,{
+            method: 'PUT',
+            headers: {
+                'content-type':'application/json'
+            },
+            body: JSON.stringify(newCoffee)
+        })
+        .then(res=>res.json())
+        .then(data =>{
+            console.log(data);
+
+            if(data.modifiedCount){
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Coffee updated successfully',
+                    icon: 'success',
+                    confirmButtonText: 'Cool'
+                  })
+                  form.reset();
+            }
+        })
+    }
+
+
     return (
-        <div>
-            
+        <div className="my-20 bg-slate-200 p-14">
+            <h1 className="text-5xl text-center font-extrabold mb-8">Update Coffee</h1>
+
+            <form onSubmit={handleUpdate}>
+                {/* form row (name, quantity) */}
+                <div className="md:flex gap-5 mb-7">
+                    <div className="form-control md:w-1/2">
+                        <label className="label">
+                            <span className="label-text font-bold">Coffee Name</span>
+                        </label>
+                        <label className="input-group">
+                            <input type="text" name="name" defaultValue={name} placeholder="Coffee name" className="input input-bordered w-full" />
+                        </label>
+                    </div>
+                    <div className="form-control md:w-1/2">
+                        <label className="label">
+                            <span className="label-text font-bold">Coffee Quantity</span>
+                        </label>
+                        <label className="input-group">
+                            <input type="text" name="quantity" defaultValue={quantity} placeholder="Coffee Quantity" className="input input-bordered w-full" />
+                        </label>
+                    </div>
+                </div>
+                {/* form row (supplier, taste) */}
+                <div className="md:flex gap-5 mb-7">
+                    <div className="form-control md:w-1/2">
+                        <label className="label">
+                            <span className="label-text font-bold">Supplier</span>
+                        </label>
+                        <label className="input-group">
+                            <input type="text" name="supplier" defaultValue={supplier} placeholder="Supplier" className="input input-bordered w-full" />
+                        </label>
+                    </div>
+                    <div className="form-control md:w-1/2">
+                        <label className="label">
+                            <span className="label-text font-bold">Taste</span>
+                        </label>
+                        <label className="input-group">
+                            <input type="text" name="taste" defaultValue={taste} placeholder="Taste" className="input input-bordered w-full" />
+                        </label>
+                    </div>
+                </div>
+                {/* form row (category , details) */}
+                <div className="md:flex gap-5 mb-7">
+                    <div className="form-control md:w-1/2">
+                        <label className="label">
+                            <span className="label-text font-bold">Category</span>
+                        </label>
+                        <label className="input-group">
+                            <input type="text" name="category" defaultValue={category} placeholder="Category" className="input input-bordered w-full" />
+                        </label>
+                    </div>
+                    <div className="form-control md:w-1/2">
+                        <label className="label">
+                            <span className="label-text font-bold">Details</span>
+                        </label>
+                        <label className="input-group">
+                            <input type="text" name="details" defaultValue={details} placeholder="Details" className="input input-bordered w-full" />
+                        </label>
+                    </div>
+                </div>
+                {/* form row (photo uri) */}
+                <div className="form-control w-full mb-7">
+                    <label className="label">
+                        <span className="label-text font-bold">Photo Uri</span>
+                    </label>
+                    <label className="input-group">
+                        <input type="text" name="photo" defaultValue={photo} placeholder="Photo Uri" className="input input-bordered w-full" />
+                    </label>
+                </div>
+
+                <div>
+                <input className="btn btn-block btn-neutral" type="submit" value="Update Coffee" />
+                </div>
+
+            </form>
         </div>
     );
 };
